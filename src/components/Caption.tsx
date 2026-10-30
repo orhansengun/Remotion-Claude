@@ -6,25 +6,27 @@ export type CaptionBeat = {at: number; text: string; lines?: number[]; to?: numb
 
 const MAX_GAP = 0.3;
 
-const styleFor = (raw: string) => {
+const styleFor = (raw: string, light: boolean) => {
 	const marks = raw.match(/^[~!^_#]+/)?.[0] ?? '';
 	const word = raw.slice(marks.length);
-	let color = C.ink;
+	let color = light ? '#FFFDF8' : C.ink;
 	let size = 66;
 	let weight = 800;
 	if (marks.includes('~')) {
-		color = C.grey;
+		color = light ? '#E4E0D8' : C.grey;
 		size = 44;
 		weight = 700;
 	}
-	if (marks.includes('!')) color = C.red;
-	if (marks.includes('^')) color = C.orange;
-	if (marks.includes('_')) color = C.mint;
+	if (marks.includes('!')) color = light ? '#FF6B5E' : C.red;
+	if (marks.includes('^')) color = light ? '#FFB547' : C.orange;
+	if (marks.includes('_')) color = light ? '#6EE7A0' : C.mint;
 	if (marks.includes('#')) size = 96;
 	return {word, color, size, weight};
 };
 
-export const Captions: React.FC<{beats: CaptionBeat[]}> = ({beats}) => {
+// tone="light": 3D/sinematik arka planlar için beyaz, gölgeli yazı.
+export const Captions: React.FC<{beats: CaptionBeat[]; tone?: 'dark' | 'light'}> = ({beats, tone = 'dark'}) => {
+	const light = tone === 'light';
 	const frame = useCurrentFrame();
 	const {fps} = useVideoConfig();
 	const idx = beats.findLastIndex((b) => frame >= sec(b.at));
@@ -51,12 +53,13 @@ export const Captions: React.FC<{beats: CaptionBeat[]}> = ({beats}) => {
 				fontFamily: FONT,
 				letterSpacing: -1.5,
 				lineHeight: 1.15,
+				textShadow: light ? '0 3px 14px rgba(0,0,0,0.65), 0 1px 3px rgba(0,0,0,0.6)' : undefined,
 			}}
 		>
 			{lines.map((line, li) => (
 				<div key={li}>
 					{line.map((raw, wi) => {
-						const s = styleFor(raw);
+						const s = styleFor(raw, light);
 						const appear = wordAt(li, wi);
 						const p = spring({frame: frame - appear, fps, config: {damping: 14, mass: 0.6}});
 						return (

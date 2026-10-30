@@ -18,3 +18,20 @@ palet kullanılmaz. Şu ana kadar: 01 Sol Rakam = cream (video+kapak), 02 IKEA =
 
 Stil: düz vektör çizimler, düz vektör çizimler, kelime kelime altyazı, ≤45 sn, ilk 2 sn kanca, sonda logo jeneriği.
 Ortak parçalar: `src/components/kit.tsx`, `Soundtrack.tsx`, `Caption.tsx`, `Props.tsx`, `Stage.tsx`.
+
+## 3D sinematik format (04 POS'tan itibaren varsayılan)
+
+- Konular: merak uyandıran "nasıl çalışır / neden" başlıkları + gündem. Kanca bir soru ya da şaşırtıcı bir iddia.
+- 3D: `@remotion/three` + `@react-three/drei` + `@react-three/postprocessing` (DOF, bloom, vinyet). Tek `ThreeCanvas`,
+  içinde tüm mekânlar (ör. dükkân, maket şehir, oda) ve `SHOTS` listesiyle kesmeli kamera planları.
+  Dikey kadrajın yatay açısı dar: geniş mekânlarda shot başına `fov` 45-50 kullan. 3D yazı için `Label` (canvas dokusu).
+- Altyazı: `<Captions tone="light">`. Kapak: `CinemaCover` + videodan `Freeze` edilmiş 3D kare.
+- Render: `--gl=swangle --concurrency=4`; 1080p 45 sn ≈ 20-40 dk. Önizleme için `remotion still --scale=0.333`.
+- Kayıt 45 sn'yi aşarsa ses `atempo` ile hızlandırılır (≤ %6), zamanlar `T()` ile çevrilir.
+
+## Müzik ve efektler
+
+- Her video **içeriğine uygun, kendine özel** bir müzik alır (`scripts/gen_audio.py`): ör. 01-03 lofi (`music/lofi-96.wav`),
+  04 POS teknoloji/fintek (`music/tech-120-pos.wav`, bölüm yoğunlukları hikâyeye göre). Aynı parça tekrar kullanılmaz.
+- Efektler sahnedeki olayla eşleşmeli (POS bip, onay, NFC, uğultu, kıvılcım, veri, kilit, glitch, fiş yazıcı...).
+  Yeni konu yeni ses gerektiriyorsa önce `gen_audio.py`'ye eklenir.

@@ -5,6 +5,8 @@ import {IkeaCover} from './videos/Ikea/IkeaCover';
 import {Ucretsiz, UCRETSIZ_FRAMES} from './videos/Ucretsiz/Ucretsiz';
 import {UcretsizCover} from './videos/Ucretsiz/UcretsizCover';
 import {PosTest} from './videos/PosTest/PosTest';
+import {Pos, POS_FRAMES} from './videos/Pos/Pos';
+import {PosCover} from './videos/Pos/PosCover';
 import {SolRakam, SOL_RAKAM_FRAMES} from './videos/SolRakam/SolRakam';
 import {FPS, HEIGHT, WIDTH} from './theme';
 
@@ -30,5 +32,7 @@ export const Root: React.FC = () => (
 	<Composition id="Ucretsiz" component={Ucretsiz} durationInFrames={UCRETSIZ_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} defaultProps={{vo: 'vo-ucretsiz.wav'}} />
 	<Still id="UcretsizCover" component={UcretsizCover} width={WIDTH} height={HEIGHT} />
 	<Composition id="PosTest" component={PosTest} durationInFrames={120} fps={FPS} width={WIDTH} height={HEIGHT} />
+	<Composition id="Pos" component={Pos} durationInFrames={POS_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} defaultProps={{vo: 'vo-pos.wav'}} />
+	<Still id="PosCover" component={PosCover} width={WIDTH} height={HEIGHT} />
 	</>
 );

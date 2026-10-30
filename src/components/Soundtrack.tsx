@@ -2,7 +2,9 @@ import {Audio, interpolate, Sequence, staticFile} from 'remotion';
 import {sec} from '../theme';
 import {PAN} from './kit';
 
-export type Sfx = 'whoosh' | 'pop' | 'ding' | 'thud' | 'tick' | 'rise' | 'coin' | 'logo';
+export type Sfx =
+	| 'whoosh' | 'pop' | 'ding' | 'thud' | 'tick' | 'rise' | 'coin' | 'logo'
+	| 'posbeep' | 'approve' | 'nfc' | 'hum' | 'zap' | 'data' | 'lock' | 'glitch' | 'boom' | 'printer';
 export type Hit = [at: number, name: Sfx, volume: number];
 
 // Sahne geçişlerine whoosh ekler; sahne başlangıçları verilir (ilk sahne hariç).
