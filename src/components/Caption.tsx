@@ -2,9 +2,9 @@ import {interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {C, FONT, sec} from '../theme';
 
 // Metin işaretleri: ~küçük gri, !kırmızı, ^turuncu, _yeşil, #büyük. "|" satır atlatır.
-export type CaptionBeat = {at: number; text: string};
+export type CaptionBeat = {at: number; text: string; lines?: number[]; to?: number};
 
-const WORD_GAP = 0.2;
+const MAX_GAP = 0.3;
 
 const styleFor = (raw: string) => {
 	const marks = raw.match(/^[~!^_#]+/)?.[0] ?? '';
@@ -30,9 +30,15 @@ export const Captions: React.FC<{beats: CaptionBeat[]}> = ({beats}) => {
 	const idx = beats.findLastIndex((b) => frame >= sec(b.at));
 	if (idx < 0) return null;
 	const beat = beats[idx];
-	const start = sec(beat.at);
 	const lines = beat.text.split('|').map((l) => l.trim().split(/\s+/));
-	let wordIndex = 0;
+	const lineStarts = [beat.at, ...(beat.lines ?? [])];
+	// Kelimeler, satırın konuşulduğu süreye yayılarak sırayla belirir.
+	const wordAt = (li: number, wi: number) => {
+		const from = lineStarts[li] ?? lineStarts[lineStarts.length - 1];
+		const until = lineStarts[li + 1] ?? beat.to ?? from + MAX_GAP * lines[li].length;
+		const gap = Math.min(MAX_GAP, (until - from) / lines[li].length);
+		return sec(from + gap * wi);
+	};
 
 	return (
 		<div
@@ -51,7 +57,7 @@ export const Captions: React.FC<{beats: CaptionBeat[]}> = ({beats}) => {
 				<div key={li}>
 					{line.map((raw, wi) => {
 						const s = styleFor(raw);
-						const appear = start + sec(WORD_GAP * wordIndex++);
+						const appear = wordAt(li, wi);
 						const p = spring({frame: frame - appear, fps, config: {damping: 14, mass: 0.6}});
 						return (
 							<span

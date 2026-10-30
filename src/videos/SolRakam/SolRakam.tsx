@@ -1,10 +1,11 @@
 import {createContext, useContext} from 'react';
-import {AbsoluteFill, Easing, interpolate, Sequence, spring, useCurrentFrame, useVideoConfig} from 'remotion';
+import {AbsoluteFill, Easing, Img, interpolate, Sequence, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {Captions} from '../../components/Caption';
+import {Soundtrack} from './Soundtrack';
 import {Crown, Dress, Person, PriceTag} from '../../components/Props';
 import {Spotlight, Stage} from '../../components/Stage';
 import {C, FONT, GROUND_Y, sec, WIDTH} from '../../theme';
-import {BEATS, SCENES, TOTAL_SECONDS} from './script';
+import {BEATS, CUES, SCENES, TOTAL_SECONDS} from './script';
 
 export const SOL_RAKAM_FRAMES = sec(TOTAL_SECONDS);
 const PAN = 14;
@@ -70,9 +71,9 @@ const Scene: React.FC<{range: readonly [number, number]; children: React.ReactNo
 
 // 1) Kanca: terazi. Gerçek fark 1 kuruş, beyindeki fark 1 lira.
 const HookScene: React.FC = () => {
-	const t0 = SCENES.hook[0];
-	const tilt = interpolate(usePop(t0 + 0.3, 14), [0, 1], [0, -2.5]) + interpolate(usePop(t0 + 4.4, 9), [0, 1], [0, -15]);
-	const reveal = usePop(4.4);
+	const tilt =
+		interpolate(usePop(CUES.hookSettle, 14), [0, 1], [0, -2.5]) + interpolate(usePop(CUES.hookTilt, 9), [0, 1], [0, -15]);
+	const reveal = usePop(CUES.hookTilt);
 	const pivot = {x: 540, y: 690};
 	const L = 300;
 	const rad = (tilt * Math.PI) / 180;
@@ -110,10 +111,9 @@ const HookScene: React.FC = () => {
 
 // 2) Beyin soldan okur: ilk rakam büyür, kalanı bulanıklaşır.
 const BrainScene: React.FC = () => {
-	const s = SCENES.brain[0];
-	const sweep = useRamp(s + 0.4, s + 2.0);
-	const focus = useRamp(s + 2.3, s + 3.0);
-	const pill = usePop(s + 4.7);
+	const sweep = useRamp(CUES.brainSweep[0], CUES.brainSweep[1]);
+	const focus = useRamp(CUES.brainFocus, CUES.brainFocus + 0.6);
+	const pill = usePop(CUES.brainPill);
 	return (
 		<AbsoluteFill>
 			<Spotlight x={300} width={520} opacity={focus} />
@@ -140,14 +140,13 @@ const BrainScene: React.FC = () => {
 
 // 3) Katalog deneyi: $39, $34'ten daha çok satıyor.
 const CatalogScene: React.FC = () => {
-	const s = SCENES.catalog[0];
 	const items = [
-		{x: 230, price: '$34', h: 0.6, at: 6.7, dress: C.mint},
-		{x: 540, price: '$39', h: 1, at: 9.0, dress: C.orange},
-		{x: 850, price: '$44', h: 0.42, at: 6.9, dress: C.red},
+		{x: 230, price: '$34', h: 0.6, growAt: CUES.barsSide, dress: C.mint},
+		{x: 540, price: '$39', h: 1, growAt: CUES.barWin, dress: C.orange},
+		{x: 850, price: '$44', h: 0.42, growAt: CUES.barsSide + 0.2, dress: C.red},
 	];
-	const crown = usePop(s + 9.6);
-	const win = useRamp(s + 9.0, s + 9.6);
+	const crown = usePop(CUES.crown);
+	const win = useRamp(CUES.barWin, CUES.crown);
 	return (
 		<AbsoluteFill>
 			<Spotlight x={540} width={460} opacity={win} />
@@ -155,7 +154,7 @@ const CatalogScene: React.FC = () => {
 				<line x1={80} y1={500} x2={1000} y2={500} stroke={C.ink} strokeWidth={10} strokeLinecap="round" />
 			</svg>
 			{items.map((it, i) => (
-				<Item key={it.price} {...it} i={i} s={s} />
+				<Item key={it.price} {...it} i={i} />
 			))}
 			<Abs x={540} y={GROUND_Y - 330 - 70} style={{transform: `translate(-50%,0) scale(${crown})`}}>
 				<Crown />
@@ -169,18 +168,17 @@ const CatalogScene: React.FC = () => {
 	);
 };
 
-const Item: React.FC<{x: number; price: string; h: number; at: number; dress: string; i: number; s: number}> = ({
+const Item: React.FC<{x: number; price: string; h: number; growAt: number; dress: string; i: number}> = ({
 	x,
 	price,
 	h,
-	at,
+	growAt,
 	dress,
 	i,
-	s,
 }) => {
-	const dressIn = usePop(s + 0.3 + i * 0.25);
-	const tag = usePop(s + 3.7 + i * 0.7);
-	const grow = useRamp(s + at, s + at + 0.9);
+	const dressIn = usePop(CUES.dresses + i * 0.25);
+	const tag = usePop(CUES.tags[i]);
+	const grow = useRamp(growAt, growAt + 0.9);
 	const barH = 330 * h * grow;
 	return (
 		<>
@@ -224,11 +222,10 @@ const Phone: React.FC = () => (
 
 // 4) Market ve telefon: aynı oyun.
 const MarketScene: React.FC = () => {
-	const s = SCENES.market[0];
-	const a = usePop(s + 0.2);
-	const b = usePop(s + 1.8);
-	const hi = useRamp(s + 4.4, s + 4.9);
-	const crowd = usePop(s + 4.4);
+	const a = usePop(CUES.bag);
+	const b = usePop(CUES.phone);
+	const hi = useRamp(CUES.sameGame, CUES.sameGame + 0.5);
+	const crowd = usePop(CUES.sameGame);
 	const frame = useAbsFrame();
 	return (
 		<AbsoluteFill>
@@ -258,9 +255,8 @@ const MarketScene: React.FC = () => {
 
 // 5) Lüks markalar yuvarlak fiyat kullanır.
 const LuxuryScene: React.FC = () => {
-	const s = SCENES.luxury[0];
-	const shift = useRamp(s + 2.3, s + 2.9);
-	const value = usePop(s + 4.2, 10);
+	const shift = useRamp(CUES.luxuryShift, CUES.luxuryShift + 0.6);
+	const value = usePop(CUES.luxuryValue, 10);
 	return (
 		<AbsoluteFill>
 			<Spotlight x={780} width={520} opacity={shift} />
@@ -290,9 +286,8 @@ const LuxuryScene: React.FC = () => {
 
 // 6) Kapanış: 9,99 yukarı yuvarlanıp 10,00 olur.
 const RoundScene: React.FC = () => {
-	const s = SCENES.round[0];
-	const roll = useRamp(s + 2.1, s + 2.7);
-	const arrow = usePop(s + 2.1);
+	const roll = useRamp(CUES.roll, CUES.roll + 0.6);
+	const arrow = usePop(CUES.roll);
 	return (
 		<AbsoluteFill>
 			<Spotlight x={540} width={700} opacity={0.5 + roll * 0.5} />
@@ -314,19 +309,47 @@ const RoundScene: React.FC = () => {
 	);
 };
 
+// Jenerik: Örgün Eğitim logosu, logonun sarı zeminiyle aynı renkte bir perde üzerinde.
 const EndCard: React.FC = () => {
-	const s = SCENES.end[0];
-	const bg = useRamp(s, s + 0.4);
-	const logo = usePop(s + 0.3);
-	const cta = usePop(s + 0.9);
+	const s = CUES.end;
+	const bg = useRamp(s, s + 0.45);
+	const logo = usePop(s + 0.25, 11);
+	const cta = usePop(s + 0.8);
+	const frame = useAbsFrame();
+	const drift = Math.sin((frame - sec(s)) / 18) * 1.5;
 	return (
-		<AbsoluteFill style={{background: C.ink, clipPath: `circle(${bg * 150}% at 50% 50%)`, alignItems: 'center', justifyContent: 'center', fontFamily: FONT}}>
-			<div style={{transform: `scale(${logo})`, textAlign: 'center'}}>
-				<div style={{color: C.orange, fontSize: 40, fontWeight: 800, letterSpacing: 10}}>HER GÜN BİR FİKİR</div>
-				<div style={{color: C.card, fontSize: 130, fontWeight: 900, letterSpacing: -4, lineHeight: 1}}>ÖRGÜN</div>
-				<div style={{color: C.card, fontSize: 130, fontWeight: 900, letterSpacing: -4, lineHeight: 1}}>EĞİTİM</div>
-			</div>
-			<div style={{marginTop: 70, transform: `scale(${cta})`, background: C.orange, color: C.card, fontSize: 52, fontWeight: 900, padding: '20px 56px', borderRadius: 60}}>
+		<AbsoluteFill
+			style={{
+				background: 'linear-gradient(180deg, #EDD596 0%, #EBC46E 55%, #E8B247 100%)',
+				clipPath: `circle(${bg * 150}% at 50% 55%)`,
+				alignItems: 'center',
+				justifyContent: 'center',
+				fontFamily: FONT,
+			}}
+		>
+			<Img
+				src={staticFile('logo.jpg')}
+				style={{
+					width: 900,
+					transform: `scale(${interpolate(logo, [0, 1], [0.6, 1])}) rotate(${interpolate(logo, [0, 1], [-12, 0]) + drift}deg)`,
+					opacity: logo,
+					maskImage: 'radial-gradient(circle at 50% 50%, black 52%, transparent 70%)',
+					WebkitMaskImage: 'radial-gradient(circle at 50% 50%, black 52%, transparent 70%)',
+				}}
+			/>
+			<div
+				style={{
+					marginTop: 10,
+					transform: `scale(${cta})`,
+					background: '#B3261E',
+					color: C.card,
+					fontSize: 54,
+					fontWeight: 900,
+					padding: '20px 60px',
+					borderRadius: 60,
+					boxShadow: '0 10px 0 rgba(120,30,20,0.25)',
+				}}
+			>
 				Takip et →
 			</div>
 		</AbsoluteFill>
@@ -359,6 +382,7 @@ export const SolRakam: React.FC = () => (
 				<EndCard />
 			</OffsetCtx.Provider>
 		</Sequence>
+		<Soundtrack />
 	</Stage>
 );
 

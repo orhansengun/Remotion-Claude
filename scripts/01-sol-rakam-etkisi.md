@@ -1,6 +1,6 @@
 # Video 01 — "9,99 TL, 10 TL'den ucuz değil" (Sol Rakam Etkisi)
 
-**Süre:** 44,5 sn · **Format:** 1080×1920 dikey · **Render:** `renders/01-sol-rakam-etkisi.mp4`
+**Süre:** 45 sn (ses + müzik + efekt + logo jeneriği) · **Format:** 1080×1920 dikey · **Render:** `renders/01-sol-rakam-etkisi.mp4`
 
 ## ElevenLabs'e yapıştırılacak metin
 
@@ -45,7 +45,17 @@ Toplam okuma hedefi ~43 sn. Uzun kalırsa hızı 1.1'e çekin.
 | 40,0 | yukarı yuvarla. |
 | 41,6 | (Kapanış kartı) Takip et. |
 
-Ses kaydının MP3'ü gönderilirse sahne zamanları `src/videos/SolRakam/script.ts` içinden sese birebir oturtulup yeniden render alınabilir.
+Final videoda sahneler ElevenLabs kaydının konuşma aralarına göre yeniden zamanlandı (`src/videos/SolRakam/script.ts` → `BEATS`, `CUES`).
+
+## Ses miksajı
+
+- Seslendirme: `public/vo-sol-rakam.wav` (orijinal MP3, -16 LUFS'a normalize edildi)
+- Müzik: `public/music/lofi-96.wav`; `scripts/gen_audio.py` ile sentezlendi, telif sorunu yok. Konuşmanın yaklaşık 18 dB altında çalar, jenerikte yükselir.
+- Efektler: `public/sfx/*.wav` (whoosh, pop, tick, ding, coin, rise, thud, logo), `Soundtrack.tsx` içinde görsel olaylara bağlı.
+- Mastering: render sonrası -14 LUFS, tepe değeri -1,5 dBFS:
+  ```bash
+  ffmpeg -i out/SolRakam-raw.mp4 -c:v copy -af "volume=<-14 - I>dB,alimiter=limit=0.84:level=false" -c:a aac -b:a 192k out/SolRakam.mp4
+  ```
 
 ## Paylaşım metni
 
