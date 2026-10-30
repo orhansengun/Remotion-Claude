@@ -1,12 +1,13 @@
 import {AbsoluteFill} from 'remotion';
-import {C, GROUND_Y} from '../theme';
+import {GROUND_Y, Palette, PALETTES} from '../theme';
 
 // Örnekteki krem zemin, hafif nokta dokusu ve zemin çizgisi.
-export const Stage: React.FC<{children?: React.ReactNode}> = ({children}) => (
+// palette ile videonun zemin rengi değiştirilebilir; varsayılan krem.
+export const Stage: React.FC<{children?: React.ReactNode; palette?: Palette}> = ({children, palette: P = PALETTES.cream}) => (
 	<AbsoluteFill
 		style={{
-			backgroundColor: C.bg,
-			backgroundImage: 'radial-gradient(rgba(30,58,47,0.07) 2px, transparent 2px)',
+			backgroundColor: P.bg,
+			backgroundImage: `radial-gradient(${P.dots} 2px, transparent 2px)`,
 			backgroundSize: '44px 44px',
 		}}
 	>
@@ -17,8 +18,8 @@ export const Stage: React.FC<{children?: React.ReactNode}> = ({children}) => (
 				left: 0,
 				right: 0,
 				bottom: 0,
-				background: 'linear-gradient(#E6E2D8, #EDEAE2 40%, #F1EEE6)',
-				borderTop: `6px solid ${C.ink}`,
+				background: `linear-gradient(${P.ground}, ${P.bg})`,
+				borderTop: `6px solid ${P.line}`,
 			}}
 		/>
 		{children}

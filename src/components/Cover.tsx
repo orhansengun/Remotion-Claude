@@ -1,5 +1,5 @@
 import {AbsoluteFill, Img, staticFile} from 'remotion';
-import {C, FONT} from '../theme';
+import {C, FONT, Palette, PALETTES} from '../theme';
 import {Person} from './Props';
 
 // Reels kapağı 1080×1920; profil ızgarası ortadaki 1080×1440'ı (3:4) gösterir.
@@ -14,13 +14,14 @@ export type CoverProps = {
 	// price verilirse ilk karakteri vurgulanan büyük etiket; hero verilirse onun yerine özel görsel.
 	price?: string;
 	hero?: React.ReactNode;
+	palette?: Palette;
 };
 
-export const Cover: React.FC<CoverProps> = ({kicker, top, bottom, price = '', hero}) => (
+export const Cover: React.FC<CoverProps> = ({kicker, top, bottom, price = '', hero, palette: P = PALETTES.cream}) => (
 	<AbsoluteFill
 		style={{
-			backgroundColor: C.bg,
-			backgroundImage: 'radial-gradient(rgba(30,58,47,0.08) 2px, transparent 2px)',
+			backgroundColor: P.bg,
+			backgroundImage: `radial-gradient(${P.dots} 2px, transparent 2px)`,
 			backgroundSize: '44px 44px',
 			fontFamily: FONT,
 			alignItems: 'center',
@@ -34,7 +35,7 @@ export const Cover: React.FC<CoverProps> = ({kicker, top, bottom, price = '', he
 				width: 900,
 				height: 1920,
 				marginLeft: -450,
-				background: 'linear-gradient(rgba(255,214,90,0), rgba(255,214,90,0.35) 60%, rgba(255,214,90,0))',
+				background: `linear-gradient(transparent, ${P.beam} 60%, transparent)`,
 				clipPath: 'polygon(40% 0, 60% 0, 100% 100%, 0 100%)',
 			}}
 		/>
@@ -46,13 +47,13 @@ export const Cover: React.FC<CoverProps> = ({kicker, top, bottom, price = '', he
 					height: 110,
 					objectFit: 'cover',
 					borderRadius: 55,
-					border: `5px solid ${C.ink}`,
+					border: `5px solid ${P.line}`,
 				}}
 			/>
 			<div
 				style={{
-					background: C.ink,
-					color: C.card,
+					background: P.pillBg,
+					color: P.pillText,
 					fontSize: 40,
 					fontWeight: 900,
 					letterSpacing: 4,
@@ -70,7 +71,7 @@ export const Cover: React.FC<CoverProps> = ({kicker, top, bottom, price = '', he
 				// Uzun başlıklar kenara dayanmasın diye boyut karakter sayısına göre küçülür.
 				fontSize: Math.min(118, Math.floor(960 / (top.length * 0.56))),
 				fontWeight: 900,
-				color: C.ink,
+				color: P.text,
 				letterSpacing: -4,
 				textAlign: 'center',
 				lineHeight: 1,
@@ -123,7 +124,7 @@ export const Cover: React.FC<CoverProps> = ({kicker, top, bottom, price = '', he
 				top: GRID_TOP + 940,
 				fontSize: 150,
 				fontWeight: 900,
-				color: C.red,
+				color: P.accent,
 				letterSpacing: -5,
 				textAlign: 'center',
 				lineHeight: 1,
@@ -131,11 +132,11 @@ export const Cover: React.FC<CoverProps> = ({kicker, top, bottom, price = '', he
 		>
 			{bottom}
 		</div>
-		<div style={{position: 'absolute', top: GRID_BOTTOM - 150, left: 0, right: 0, height: 400, background: 'linear-gradient(#E6E2D8, #F1EEE6)', borderTop: `8px solid ${C.ink}`}} />
+		<div style={{position: 'absolute', top: GRID_BOTTOM - 150, left: 0, right: 0, height: 400, background: `linear-gradient(${P.ground}, ${P.bg})`, borderTop: `8px solid ${P.line}`}} />
 		<div style={{position: 'absolute', top: GRID_BOTTOM - 340, display: 'flex', gap: 46, alignItems: 'flex-end'}}>
-			{[C.mint, C.green, C.mint, C.green, C.mint].map((color, i) => (
+			{[0, 1, 0, 1, 0].map((k) => P.people[k]).map((color, i) => (
 				<div key={i} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-					<div style={{fontSize: 56, fontWeight: 900, color: C.red, height: 70, opacity: i % 2 ? 0 : 1}}>?</div>
+					<div style={{fontSize: 56, fontWeight: 900, color: P.mark, height: 70, opacity: i % 2 ? 0 : 1}}>?</div>
 					<Person color={color} scale={0.8} />
 				</div>
 			))}

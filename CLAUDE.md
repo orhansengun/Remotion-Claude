@@ -9,5 +9,9 @@
    - Kapak (`src/components/Cover.tsx`, Instagram 3:4 güvenli alanı) **en son** hazırlanır.
 3. Final video ve kapak birlikte teslim edilir (`renders/`).
 
-Stil: krem zemin, düz vektör çizimler, kelime kelime altyazı, ≤45 sn, ilk 2 sn kanca, sonda logo jeneriği.
+Renk: Izgara tekdüze görünmesin diye her video konusuna uygun bir palet seçer (`PALETTES` in `src/theme.ts`:
+cream, navy, sage, blush, butter). Kapak `palette`, video `<Stage palette>` ile renklenir. Art arda iki paylaşımda aynı
+palet kullanılmaz. Şu ana kadar: 01 Sol Rakam = cream (video+kapak), 02 IKEA = video cream, kapak navy.
+
+Stil: düz vektör çizimler, düz vektör çizimler, kelime kelime altyazı, ≤45 sn, ilk 2 sn kanca, sonda logo jeneriği.
 Ortak parçalar: `src/components/kit.tsx`, `Soundtrack.tsx`, `Caption.tsx`, `Props.tsx`, `Stage.tsx`.
