@@ -1,6 +1,6 @@
 # Video 06: "Soğan seni ağlatmıyor, kendini koruyor" (Mutfak bilimi) — 3D
 
-**Kategori:** Mutfak bilimi / kimya · **Hedef:** ~42 sn seslendirme + logo jeneriği ≤ 45 sn
+**Kategori:** Mutfak bilimi / kimya · **Süre:** 45 sn (kayıt %5 hızlandırıldı) · **Render:** `renders/06-sogan.mp4`, kapak `renders/06-sogan-kapak.png` · **Müzik:** `music/kitchen-100-sogan.wav`
 **Yapı:** Kanca → "Örgün Eğitim başlasın!" marka girişi → anlatım → pratik ipuçları → yorum sorusu
 
 ## ElevenLabs'e yapıştırılacak metin
