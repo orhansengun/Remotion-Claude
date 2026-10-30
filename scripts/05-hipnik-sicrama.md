@@ -1,6 +1,6 @@
 # Video 05: "Uykuya dalarken neden düşüyormuş gibi irkilirsin?" (Hipnik sıçrama) — 3D
 
-**Kategori:** İnsan bedeni / beyin · **Hedef:** ~42 sn seslendirme + logo jeneriği ≤ 45 sn
+**Kategori:** İnsan bedeni / beyin · **Süre:** 45 sn (kayıt %5 hızlandırıldı) · **Render:** `renders/05-hipnik-sicrama.mp4`, kapak `renders/05-hipnik-sicrama-kapak.png` · **Müzik:** `music/dream-70-uyku.wav`
 **Yapı:** Kanca → **"Örgün Eğitim başlasın!" marka girişi** (logo + isim, ~1,5 sn) → anlatım → kapanış
 
 ## ElevenLabs'e yapıştırılacak metin
