@@ -11,11 +11,12 @@ export type CoverProps = {
 	kicker: string;
 	top: string;
 	bottom: string;
-	price: string;
-	// Fiyatın ilk karakteri vurgulanır, kalanı soluk kalır.
+	// price verilirse ilk karakteri vurgulanan büyük etiket; hero verilirse onun yerine özel görsel.
+	price?: string;
+	hero?: React.ReactNode;
 };
 
-export const Cover: React.FC<CoverProps> = ({kicker, top, bottom, price}) => (
+export const Cover: React.FC<CoverProps> = ({kicker, top, bottom, price = '', hero}) => (
 	<AbsoluteFill
 		style={{
 			backgroundColor: C.bg,
@@ -66,7 +67,8 @@ export const Cover: React.FC<CoverProps> = ({kicker, top, bottom, price}) => (
 			style={{
 				position: 'absolute',
 				top: GRID_TOP + 270,
-				fontSize: 118,
+				// Uzun başlıklar kenara dayanmasın diye boyut karakter sayısına göre küçülür.
+				fontSize: Math.min(118, Math.floor(960 / (top.length * 0.56))),
 				fontWeight: 900,
 				color: C.ink,
 				letterSpacing: -4,
@@ -76,6 +78,9 @@ export const Cover: React.FC<CoverProps> = ({kicker, top, bottom, price}) => (
 		>
 			{top}
 		</div>
+		{hero ? (
+			<div style={{position: 'absolute', top: GRID_TOP + 420, height: 480, display: 'flex', alignItems: 'center'}}>{hero}</div>
+		) : (
 		<div
 			style={{
 				position: 'absolute',
@@ -111,6 +116,7 @@ export const Cover: React.FC<CoverProps> = ({kicker, top, bottom, price}) => (
 			</span>
 			<span style={{color: C.grey, opacity: 0.45, filter: 'blur(5px)'}}>{price.slice(1)}</span>
 		</div>
+		)}
 		<div
 			style={{
 				position: 'absolute',
