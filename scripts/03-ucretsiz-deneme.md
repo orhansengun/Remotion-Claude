@@ -1,6 +1,6 @@
 # Video 03: "İlk ay ücretsiz, çünkü iptal etmeyi unutacaksın" (Abonelik tuzağı)
 
-**Hedef:** ~41 sn seslendirme + logo jeneriği ≤ 45 sn · **Palet:** blush (pudra/kırmızı), video ve kapak
+**Süre:** 45 sn · **Render:** `renders/03-ucretsiz-deneme.mp4`, kapak `renders/03-ucretsiz-deneme-kapak.png` · **Palet:** blush (pudra/kırmızı), video ve kapak
 
 ## ElevenLabs'e yapıştırılacak metin
 

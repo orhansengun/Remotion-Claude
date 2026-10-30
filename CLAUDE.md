@@ -14,7 +14,7 @@
 
 Renk: Izgara tekdüze görünmesin diye her video konusuna uygun bir palet seçer (`PALETTES` in `src/theme.ts`:
 cream, navy, sage, blush, butter). Kapak `palette`, video `<Stage palette>` ile renklenir. Art arda iki paylaşımda aynı
-palet kullanılmaz. Şu ana kadar: 01 Sol Rakam = cream (video+kapak), 02 IKEA = video cream, kapak navy.
+palet kullanılmaz. Şu ana kadar: 01 Sol Rakam = cream (video+kapak), 02 IKEA = video cream, kapak navy; 03 Ücretsiz deneme = blush (video+kapak).
 
 Stil: düz vektör çizimler, düz vektör çizimler, kelime kelime altyazı, ≤45 sn, ilk 2 sn kanca, sonda logo jeneriği.
 Ortak parçalar: `src/components/kit.tsx`, `Soundtrack.tsx`, `Caption.tsx`, `Props.tsx`, `Stage.tsx`.

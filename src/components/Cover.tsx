@@ -122,7 +122,8 @@ export const Cover: React.FC<CoverProps> = ({kicker, top, bottom, price = '', he
 			style={{
 				position: 'absolute',
 				top: GRID_TOP + 940,
-				fontSize: 150,
+				fontSize: Math.min(150, Math.floor(1000 / (bottom.length * 0.56))),
+				whiteSpace: 'nowrap',
 				fontWeight: 900,
 				color: P.accent,
 				letterSpacing: -5,
