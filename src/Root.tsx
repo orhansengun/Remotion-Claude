@@ -7,6 +7,8 @@ import {UcretsizCover} from './videos/Ucretsiz/UcretsizCover';
 import {PosTest} from './videos/PosTest/PosTest';
 import {Pos, POS_FRAMES} from './videos/Pos/Pos';
 import {PosCover} from './videos/Pos/PosCover';
+import {Uyku, UYKU_FRAMES} from './videos/Uyku/Uyku';
+import {UykuCover} from './videos/Uyku/UykuCover';
 import {SolRakam, SOL_RAKAM_FRAMES} from './videos/SolRakam/SolRakam';
 import {FPS, HEIGHT, WIDTH} from './theme';
 
@@ -34,5 +36,7 @@ export const Root: React.FC = () => (
 	<Composition id="PosTest" component={PosTest} durationInFrames={120} fps={FPS} width={WIDTH} height={HEIGHT} />
 	<Composition id="Pos" component={Pos} durationInFrames={POS_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} defaultProps={{vo: 'vo-pos.wav'}} />
 	<Still id="PosCover" component={PosCover} width={WIDTH} height={HEIGHT} />
+	<Composition id="Uyku" component={Uyku} durationInFrames={UYKU_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} defaultProps={{vo: 'vo-uyku.wav'}} />
+	<Still id="UykuCover" component={UykuCover} width={WIDTH} height={HEIGHT} />
 	</>
 );

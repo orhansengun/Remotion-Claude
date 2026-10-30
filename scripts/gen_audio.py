@@ -324,9 +324,126 @@ def printer(d=1.4):
 	return (buzz + motor) * np.minimum(x / 0.05, 1) * np.minimum((d - x) / 0.08, 1)
 
 
+# ---------- Rüya / uyku müziği: ~70 BPM ambient, Dmaj7 - Bm7 - Gmaj7 - A ----------
+def music_dream(length, mutes, tension, forest, sting):
+	"""mutes: [(a, b)] müziğin kesildiği aralıklar; tension: (a, b) gerilim nabzı; forest: (a, b) gece sesleri; sting: marka vuruşu anı."""
+	mix = np.zeros(int(SR * (length + 4)))
+
+	def add(sig, at, gain):
+		i = int(at * SR)
+		if i >= len(mix) or i < 0:
+			return
+		j = min(len(mix), i + len(sig))
+		mix[i:j] += sig[: j - i] * gain
+
+	bar = 60 / 70 * 4
+	chords = [[62, 66, 69, 73], [59, 62, 66, 69], [55, 59, 62, 66], [57, 61, 64, 69]]
+	n_bars = int(length / bar) + 2
+	for b in range(n_bars):
+		start = b * bar
+		ch = chords[b % 4]
+		d = bar + 1.5
+		x = t(d)
+		pad = sum(np.sin(2 * np.pi * note(n) * x) + 0.3 * np.sin(2 * np.pi * note(n) * 2.003 * x) for n in ch)
+		pad *= np.minimum(x / 0.8, 1) * np.minimum((d - x) / 1.2, 1)
+		add(pad, start, 0.05)
+		add(np.sin(2 * np.pi * note(ch[0] - 24) * x) * np.minimum(x / 0.5, 1) * np.minimum((d - x) / 1.0, 1), start, 0.12)
+		# müzik kutusu çanları
+		for k, n in enumerate([ch[3] + 12, ch[2] + 12, ch[1] + 24, ch[2] + 12, ch[3] + 12, ch[0] + 24]):
+			if (k + b) % 4 == 3:
+				continue
+			bell = ding(note(n), 1.2) * 0.6
+			add(bell, start + k * bar / 6, 0.06)
+	# gerilim: düşük nabız + yükselen ton
+	ta, tb = tension
+	for k in range(int((tb - ta) / 0.43)):
+		at = ta + k * 0.43
+		pulse = np.sin(2 * np.pi * 55 * t(0.3)) * env(0.3, 0.005, 0.12)
+		add(pulse, at, 0.5)
+		add(np.sin(2 * np.pi * note(74 + (k % 2)) * t(0.2)) * env(0.2, 0.005, 0.08), at + 0.21, 0.04)
+	mix_len = int(SR * length)
+	mix = mix[:mix_len]
+	gate = np.ones(mix_len)
+	for a, b in mutes:
+		i, j = int(a * SR), int(b * SR)
+		gate[i:j] = 0.0
+		ramp_n = int(0.25 * SR)
+		gate[j : j + ramp_n] = np.minimum(gate[j : j + ramp_n], np.linspace(0, 1, len(gate[j : j + ramp_n])))
+	mix = lowpass(mix, 5000) * gate
+	fa, fb = forest
+	night = crickets(fb - fa)
+	mix[int(fa * SR) : int(fa * SR) + len(night)] += night[: mix_len - int(fa * SR)] * 0.12
+	st = int(sting * SR)
+	hit = boom(1.6) * 0.5 + logo()[: int(SR * 1.6)] * 0.25
+	mix[st : st + len(hit)] += hit[: mix_len - st]
+	fade = np.ones_like(mix)
+	fade[: SR // 2] = np.linspace(0, 1, SR // 2)
+	fade[-SR * 2 :] = np.linspace(1, 0, SR * 2)
+	return mix * fade
+
+
+# ---------- Uyku / beden efektleri ----------
+def heartbeat(d=0.9):
+	out = np.zeros(int(SR * d))
+	for at, g in [(0.0, 1.0), (0.22, 0.7)]:
+		x = t(0.18)
+		beat = np.sin(2 * np.pi * np.cumsum(45 + 40 * np.exp(-x / 0.03)) / SR) * env(0.18, 0.004, 0.05)
+		i = int(at * SR)
+		out[i : i + len(beat)] += beat * g
+	return lowpass(out, 300)
+
+
+def breath(d=1.6):
+	x = t(d)
+	n = rng.standard_normal(len(x))
+	shaped = lowpass(n, 1200) - lowpass(n, 300)
+	return shaped * np.sin(np.pi * x / d) ** 2
+
+
+def fallwind(d=1.6):
+	x = t(d)
+	n = rng.standard_normal(len(x))
+	cutoff = 3000 * (1 - x / d) + 300
+	return lowpass(n, cutoff) * np.minimum(x / 0.2, 1) * np.minimum((d - x) / 0.1, 1)
+
+
+def alarm(d=1.2):
+	x = t(d)
+	f = np.where((x * 6).astype(int) % 2 == 0, 880, 660)
+	tone = np.sign(np.sin(2 * np.pi * np.cumsum(f) / SR)) * 0.5
+	return lowpass(tone, 3000) * np.minimum(x / 0.01, 1) * np.minimum((d - x) / 0.05, 1)
+
+
+def jolt():
+	b = boom(1.0)
+	w = whoosh(0.25)
+	out = b.copy()
+	out[: len(w)] += w * 0.8
+	return out + np.concatenate([thud(0.4), np.zeros(len(out) - int(SR * 0.4))]) * 0.8
+
+
+def crickets(d=6.0):
+	out = np.zeros(int(SR * d))
+	at = 0.0
+	while at < d - 0.2:
+		chirp = np.sin(2 * np.pi * 4300 * t(0.12)) * (np.sin(2 * np.pi * 30 * t(0.12)) > 0) * env(0.12, 0.005, 0.05)
+		i = int(at * SR)
+		out[i : i + len(chirp)] += chirp
+		at += rng.uniform(0.25, 0.6)
+	return out
+
+
+def clockring(d=0.9):
+	x = t(d)
+	bell = (np.sin(2 * np.pi * 2100 * x) + 0.5 * np.sin(2 * np.pi * 3150 * x)) * (np.sin(2 * np.pi * 18 * x) > 0)
+	return bell * np.minimum((d - x) / 0.1, 1) * 0.6
+
+
 if __name__ == '__main__':
 	write('music/lofi-96.wav', music(45.0), 0.8)
 	# 03 POS: kanca → çip (2) → para yolculuğu (3) → gece/bloke (0) → gün sonu (1) → kapanış (2)
+	# 05 Uyku: düşüşte müzik susar, alarmda gerilim, ormanda gece sesleri, marka girişinde vuruş (zamanlar videodaki sn)
+	write('music/dream-70-uyku.wav', music_dream(45.0, mutes=[(2.4, 3.9)], tension=(17.9, 28.0), forest=(28.2, 34.5), sting=5.75), 0.8)
 	write('music/tech-120-pos.wav', music_tech(45.0, [(0, 1), (11.46, 2), (21.0, 3), (35.07, 0), (38.58, 1), (41.1, 2)]), 0.8)
 	for name, sig in {
 		'whoosh': whoosh(),
@@ -347,6 +464,12 @@ if __name__ == '__main__':
 		'glitch': glitch(),
 		'boom': boom(),
 		'printer': printer(),
+		'heartbeat': heartbeat(),
+		'breath': breath(),
+		'fallwind': fallwind(),
+		'alarm': alarm(),
+		'jolt': jolt(),
+		'clockring': clockring(),
 	}.items():
 		write(f'sfx/{name}.wav', sig)
 	print('ok')
