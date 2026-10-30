@@ -22,7 +22,7 @@ export const Root: React.FC = () => (
 		height={HEIGHT}
 		defaultProps={{kicker: 'FİYAT PSİKOLOJİSİ', top: 'Beynin bu fiyatı', price: '9,99 ₺', bottom: '9 lira sanıyor.'}}
 	/>
-	<Composition id="Ikea" component={Ikea} durationInFrames={IKEA_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} defaultProps={{}} />
+	<Composition id="Ikea" component={Ikea} durationInFrames={IKEA_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} defaultProps={{vo: 'vo-ikea.wav'}} />
 	<Still id="IkeaCover" component={IkeaCover} width={WIDTH} height={HEIGHT} />
 	</>
 );

@@ -1,6 +1,6 @@
 # Video 02: "IKEA'da kaybolman tasarım hatası değil" (Gruen etkisi)
 
-**Hedef süre:** ~42 sn seslendirme + 3 sn logo jeneriği = 45 sn · **Format:** 1080×1920 dikey
+**Süre:** 45 sn (seslendirme + müzik + efekt + logo jeneriği) · **Render:** `renders/02-ikea-kaybolma.mp4`, kapak `renders/02-ikea-kaybolma-kapak.png` · **Format:** 1080×1920 dikey
 
 ## ElevenLabs'e yapıştırılacak metin
 
