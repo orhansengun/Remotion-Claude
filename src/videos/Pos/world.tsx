@@ -9,8 +9,9 @@ import {VO_RATE} from './script';
 // Bu dosyadaki tüm zamanlar ORİJİNAL kayıt saniyesidir (o). Videodaki saniye = o / VO_RATE.
 type V3 = [number, number, number];
 
-const useO = () => {
-	const frame = useCurrentFrame();
+const useO = (atFrame?: number) => {
+	const current = useCurrentFrame();
+	const frame = atFrame ?? current;
 	const {fps} = useVideoConfig();
 	return {o: (frame / fps) * VO_RATE, frame, fps};
 };
@@ -324,8 +325,9 @@ const CameraRig: React.FC<{pos: V3; look: V3; fov: number}> = ({pos, look, fov})
 };
 
 // ---------- Sahne ----------
-export const PosWorld: React.FC = () => {
-	const {o, fps} = useO();
+// atFrame: kapak gibi durağan kareler için sahneyi belirli bir anda dondurur.
+export const PosWorld: React.FC<{atFrame?: number}> = ({atFrame}) => {
+	const {o, fps} = useO(atFrame);
 	const shot = shotAt(o);
 	const sp = ramp(o, shot.a, shot.b, Easing.inOut(Easing.sin));
 
