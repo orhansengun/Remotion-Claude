@@ -1,10 +1,13 @@
 # Örgün Eğitim video üretimi — çalışma düzeni
 
-1. Konu seçilince **yalnızca seslendirme metni** hazırlanır (`scripts/NN-konu.md`): ElevenLabs'e yapıştırılacak metin,
+1. Konu seçilince önce **seslendirme metni** hazırlanır (`scripts/NN-konu.md`): ElevenLabs'e yapıştırılacak metin,
    telaffuz notları, kaynaklar, paylaşım metni. Bu aşamada video veya kapak render edilmez.
-2. Kullanıcı ElevenLabs MP3'ünü gönderir. Ardından:
-   - `silencedetect` ile konuşma aralıkları ölçülür, `script.ts` içindeki `SCENES`, `BEATS`, `CUES` buna göre yazılır.
-   - Ses `public/vo-<konu>.wav` olarak normalize edilir (highpass + compressor + loudnorm -16).
+2. Seslendirme:
+   - **Otomatik (tercih):** `ELEVENLABS_API_KEY` ve `ELEVENLABS_VOICE_ID` ortamda varsa ve api.elevenlabs.io izinliyse
+     `python3 scripts/tts.py scripts/NN-konu.md <konu>` çalıştırılır. Bu `public/vo-<konu>.wav` ve kelime zamanlarını
+     (`vo-<konu>.words.json`) üretir; `SCENES`, `BEATS`, `CUES` kelime zamanlarından yazılır. Kullanıcıdan MP3 istenmez.
+   - **Yedek:** Erişim yoksa kullanıcı MP3 gönderir; `silencedetect` ile aralıklar ölçülür, ses aynı zincirle normalize edilir.
+   - Ses sabittir (aynı voice ID, ayarlar `scripts/voice.json`). Hız ~2,75 kelime/sn, 44 sn için ~100-105 kelime yazılır.
    - Video render edilir, sonra sabit kazanç + limiter ile -14 LUFS'a getirilir (dinamik loudnorm kullanma).
    - Kapak (`src/components/Cover.tsx`, Instagram 3:4 güvenli alanı) **en son** hazırlanır.
 3. Final video ve kapak birlikte teslim edilir (`renders/`).
