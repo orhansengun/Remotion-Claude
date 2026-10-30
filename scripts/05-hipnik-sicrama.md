@@ -1,24 +1,38 @@
 # Video 05: "Uykuya dalarken neden düşüyormuş gibi irkilirsin?" (Hipnik sıçrama) — 3D
 
 **Kategori:** İnsan bedeni / beyin · **Hedef:** ~42 sn seslendirme + logo jeneriği ≤ 45 sn
-**Yapı:** Kanca → **Örgün Eğitim marka girişi** (logo + isim, ~1,5 sn) → anlatım → kapanış
+**Yapı:** Kanca → **"Örgün Eğitim başlasın!" marka girişi** (logo + isim, ~1,5 sn) → anlatım → kapanış
 
 ## ElevenLabs'e yapıştırılacak metin
 
+**Model: Eleven v3** (duygu etiketleri yalnızca v3'te çalışır; v3 `<break>` etiketini desteklemez, duraklar "..." ile verilir).
+
 ```
-Tam uykuya dalarken, birden düşüyormuş gibi irkildin mi? Yalnız değilsin. <break time="0.4s" />
-Örgün Eğitim anlatıyor. <break time="0.6s" />
-Bunun adı hipnik sıçrama. İnsanların yüzde yetmişe yakını bunu yaşıyor. <break time="0.4s" />
-Uykuya geçerken kasların hızla gevşer. Kalbin yavaşlar, nefesin ağırlaşır. <break time="0.4s" />
-Ama beyin bu ani gevşemeyi yanlış yorumlayabilir: "Düşüyoruz!" <break time="0.4s" />
-Ve vücuda bir alarm yollar. Kaslar bir anda kasılır, sen de o sarsıntıyla uyanırsın. <break time="0.4s" />
-Bir teoriye göre bu, ağaçlarda uyuyan atalarımızdan kalma bir refleks. Düşmeden önce tutunmak için. <break time="0.4s" />
-Kafein, stres ve yorgunluk bu sıçramaları artırır. <break time="0.4s" />
-Yani o irkilme bir arıza değil. Beynin, seni korumaya çalışıyor. <break time="0.3s" />
-Takip et.
+[whispers] Tam uykuya dalarken... [gasps] birden düşüyormuş gibi irkildin mi?
+[curious] Yalnız değilsin.
+
+[excited] Örgün Eğitim başlasın!
+
+[curious] Bunun adı hipnik sıçrama. İnsanların yüzde yetmişe yakını bunu yaşıyor.
+
+[calm] Uykuya geçerken kasların hızla gevşer... kalbin yavaşlar... nefesin ağırlaşır.
+
+[mischievously] Ama beyin bu ani gevşemeyi yanlış yorumlayabilir: [shouting] "Düşüyoruz!"
+
+[dramatic] Ve vücuda bir alarm yollar. Kaslar bir anda kasılır... sen de o sarsıntıyla uyanırsın.
+
+[curious] Bir teoriye göre bu, ağaçlarda uyuyan atalarımızdan kalma bir refleks. Düşmeden önce... tutunmak için.
+
+[serious] Kafein, stres ve yorgunluk bu sıçramaları artırır.
+
+[warmly] Yani o irkilme bir arıza değil. Beynin... seni korumaya çalışıyor.
+
+[excited] Takip et!
 ```
 
 ~90 kelime; bu sesle ~42 sn. **Telaffuz:** "hipnik" → "hip-nik".
+**v3 ayarı:** Stability "Natural" (Creative duyguyu artırır ama tutarlılığı düşürür). Etiketler sesin kendisi tarafından yorumlanır;
+bir etiket abartılı/eksik çıkarsa o satırı yeniden üretmek yeterli.
 
 ## Kurgu planı (3D, ses gelince çizilecek)
 
