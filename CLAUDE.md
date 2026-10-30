@@ -12,7 +12,8 @@
 - Ses sabittir (aynı voice ID, ayarlar `scripts/voice.json`). Hız ~2,75 kelime/sn, 44 sn için ~100-105 kelime yazılır.
    - Video render edilir, sonra sabit kazanç + limiter ile -14 LUFS'a getirilir (dinamik loudnorm kullanma).
    - Kapak (`src/components/Cover.tsx`, Instagram 3:4 güvenli alanı) **en son** hazırlanır.
-3. Final video ve kapak birlikte teslim edilir (`renders/`).
+3. Final video ve kapak birlikte teslim edilir (`renders/`). Paylaşım açıklaması **tek cümle** olur ve izleyiciyi
+   yoruma davet eden bir soruyla biter (ör. "...yorumlara yaz 👇").
 
 Renk: Izgara tekdüze görünmesin diye her video konusuna uygun bir palet seçer (`PALETTES` in `src/theme.ts`:
 cream, navy, sage, blush, butter). Kapak `palette`, video `<Stage palette>` ile renklenir. Art arda iki paylaşımda aynı

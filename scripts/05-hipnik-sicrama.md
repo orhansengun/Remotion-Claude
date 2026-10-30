@@ -57,5 +57,5 @@ bir etiket abartılı/eksik çıkarsa o satırı yeniden üretmek yeterli.
 
 ## Paylaşım metni
 
-**Açıklama:** Uykuya dalarken düşüyormuş gibi irkilmenin bir adı var: hipnik sıçrama. Beynin seni korumaya çalışıyor. 😴⚡
+**Açıklama:** Uykuya dalarken düşüyormuş gibi irkilen tek sen değilsin; sen bunu en son ne zaman yaşadın, yorumlara yaz 👇😴
 **Etiketler:** #uyku #beyin #bilgi #bilim #insanbedeni #nedenolur #örgüneğitim #keşfet
