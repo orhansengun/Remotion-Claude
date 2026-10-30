@@ -1,5 +1,5 @@
 import {RoundedBox} from '@react-three/drei';
-import {Bloom, DepthOfField, EffectComposer, Vignette} from '@react-three/postprocessing';
+import {Bloom, EffectComposer, Vignette} from '@react-three/postprocessing';
 import {useMemo} from 'react';
 import {Easing, useCurrentFrame, useVideoConfig} from 'remotion';
 import * as THREE from 'three';
@@ -153,6 +153,8 @@ export const SoganWorld: React.FC<{atFrame?: number}> = ({atFrame}) => {
 	const pop = (at: number, damping = 12) => popAt(o, at, fps, VO_RATE, damping);
 	const shot = shotAt(SHOTS, o);
 	const sp = ramp(o, shot.a, shot.b, Easing.inOut(Easing.sin));
+	// Yalnızca kameranın bulunduğu mekân çizilir (gölge ve çizim maliyetini düşürür).
+	const at = o >= 5.0 && o < 20.4 ? 'CELL' : o >= 20.4 && o < 29.7 ? 'EYE' : o >= 29.7 && o < 35.3 ? 'FIELD' : 'K';
 	const camPos = mix(shot.from, shot.to, sp);
 	const look = shot.look2 ? mix(shot.look, shot.look2, sp) : shot.look;
 
@@ -200,7 +202,7 @@ export const SoganWorld: React.FC<{atFrame?: number}> = ({atFrame}) => {
 			</directionalLight>
 
 			{/* ---- Mutfak ---- */}
-			<group position={K}>
+			<group position={K} visible={at === 'K'}>
 				<mesh position={[0, -0.1, 0]} receiveShadow>
 					<boxGeometry args={[7, 0.2, 3]} />
 					<Clay color="#B5835A" rough={0.7} />
@@ -269,7 +271,7 @@ export const SoganWorld: React.FC<{atFrame?: number}> = ({atFrame}) => {
 			</group>
 
 			{/* ---- Hücre içi ---- */}
-			<group position={CELL}>
+			<group position={CELL} visible={at === 'CELL'}>
 				<RoundedBox args={[2.6, 1.8, 0.9]} radius={0.35} position={[0, 1.1, 0]}>
 					<meshStandardMaterial color="#B8E07A" transparent opacity={0.18} roughness={0.2} />
 				</RoundedBox>
@@ -314,7 +316,7 @@ export const SoganWorld: React.FC<{atFrame?: number}> = ({atFrame}) => {
 			</group>
 
 			{/* ---- Göz ---- */}
-			<group position={EYE}>
+			<group position={EYE} visible={at === 'EYE'}>
 				<mesh position={[0, 1.5, -0.2]}>
 					<sphereGeometry args={[0.95, 40, 32]} />
 					<Clay color="#FFF6F0" emissive="#FF4D5E" glow={alarm * 0.5} rough={0.25} />
@@ -371,7 +373,7 @@ export const SoganWorld: React.FC<{atFrame?: number}> = ({atFrame}) => {
 			</group>
 
 			{/* ---- Tarla ---- */}
-			<group position={FIELD}>
+			<group position={FIELD} visible={at === 'FIELD'}>
 				<mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
 					<planeGeometry args={[30, 30]} />
 					<Clay color="#6B4A2E" />
@@ -406,7 +408,6 @@ export const SoganWorld: React.FC<{atFrame?: number}> = ({atFrame}) => {
 			</group>
 
 			<EffectComposer multisampling={0}>
-				<DepthOfField target={look} focalLength={0.035} bokehScale={2} />
 				<Bloom intensity={0.6} luminanceThreshold={0.8} mipmapBlur />
 				<Vignette offset={0.25} darkness={0.55} />
 			</EffectComposer>

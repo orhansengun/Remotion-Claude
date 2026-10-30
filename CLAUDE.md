@@ -29,7 +29,9 @@ Ortak parçalar: `src/components/kit.tsx`, `Soundtrack.tsx`, `Caption.tsx`, `Pro
   içinde tüm mekânlar (ör. dükkân, maket şehir, oda) ve `SHOTS` listesiyle kesmeli kamera planları.
   Dikey kadrajın yatay açısı dar: geniş mekânlarda shot başına `fov` 45-50 kullan. 3D yazı için `Label` (canvas dokusu).
 - Altyazı: `<Captions tone="light">`. Kapak: `CinemaCover` + `<World atFrame>` ile dondurulmuş 3D kare (`Freeze` ThreeCanvas içine geçmez).
-- Render: `--gl=swangle --concurrency=4`; 1080p 45 sn ≈ 20-40 dk. Önizleme için `remotion still --scale=0.333`.
+- **DepthOfField KULLANMA:** CPU (swangle) render'da kareyi ~6 kat yavaşlatır (06 Soğan'da 4 sn → 0,6 sn/kare).
+  Derinliği sis + bloom + vinyet verir. Ayrıca yalnızca aktif mekânı çiz (`visible={at === ...}`): gizli mekânlar da gölge hesabına girer.
+- Render: `--gl=swangle --concurrency=4`; DOF'suz 1080p 45 sn ≈ 10-15 dk. Önizleme için `remotion still --scale=0.333`.
 - **Marka girişi:** Kancadan hemen sonra (~1,5 sn) logo + "ÖRGÜN EĞİTİM" girişi gelir; metinde **"Örgün Eğitim başlasın!"**
   cümlesi bu ana denk gelir. Sonda logo jeneriği de kalır.
 - Kayıt 45 sn'yi aşarsa ses `atempo` ile hızlandırılır (≤ %6), zamanlar `T()` ile çevrilir.

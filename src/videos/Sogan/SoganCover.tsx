@@ -9,7 +9,7 @@ import {SoganWorld} from './world';
 export const SoganCover: React.FC = () => {
 	const {width, height, fps} = useVideoConfig();
 	return (
-		<CinemaCover kicker="NEDEN OLUR?" top="Soğan seni ağlatmıyor," bottom="kendini koruyor." accent="#7CE0C3">
+		<CinemaCover kicker="MUTFAK BİLİMİ" top="Soğan seni ağlatmıyor," bottom="kendini koruyor." accent="#7CE0C3">
 			<ThreeCanvas width={width} height={height} shadows camera={{fov: 40, near: 0.05, far: 300}} gl={{antialias: true, toneMapping: THREE.ACESFilmicToneMapping, preserveDrawingBuffer: true}}>
 				<SoganWorld atFrame={Math.round(T(2.8) * fps)} />
 			</ThreeCanvas>
