@@ -5,7 +5,8 @@ import {PAN} from './kit';
 export type Sfx =
 	| 'whoosh' | 'pop' | 'ding' | 'thud' | 'tick' | 'rise' | 'coin' | 'logo'
 	| 'posbeep' | 'approve' | 'nfc' | 'hum' | 'zap' | 'data' | 'lock' | 'glitch' | 'boom' | 'printer'
-	| 'heartbeat' | 'breath' | 'fallwind' | 'alarm' | 'jolt' | 'clockring';
+	| 'heartbeat' | 'breath' | 'fallwind' | 'alarm' | 'jolt' | 'clockring'
+	| 'chop' | 'crunch' | 'fizz' | 'drip' | 'fridge' | 'ting' | 'boing';
 export type Hit = [at: number, name: Sfx, volume: number];
 
 // Sahne geçişlerine whoosh ekler; sahne başlangıçları verilir (ilk sahne hariç).

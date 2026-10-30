@@ -439,11 +439,130 @@ def clockring(d=0.9):
 	return bell * np.minimum((d - x) / 0.1, 1) * 0.6
 
 
+# ---------- Mutfak / oyuncu caz: ~100 BPM, pizzicato + yürüyen bas + fırça ----------
+def pluck(freq, d=0.35, bright=4):
+	x = t(d)
+	return sum(np.sin(2 * np.pi * freq * k * x) / k**1.5 for k in range(1, bright + 1)) * env(d, 0.002, 0.09)
+
+
+def music_kitchen(length, sections, cuts, sting):
+	"""sections: [(sn, mod)] mod: 'light' | 'curious' | 'tension' | 'full'; cuts: [(a, b)] susma; sting: marka vuruşu."""
+	bpm = 100
+	beat = 60 / bpm
+	mix = np.zeros(int(SR * (length + 3)))
+
+	def add(sig, at, gain):
+		i = int(at * SR)
+		if i >= len(mix) or i < 0:
+			return
+		j = min(len(mix), i + len(sig))
+		mix[i:j] += sig[: j - i] * gain
+
+	def mode_at(x):
+		m = sections[0][1]
+		for st, mm in sections:
+			if x >= st:
+				m = mm
+		return m
+
+	happy = [[48, [64, 67, 69]], [45, [64, 67, 72]], [50, [65, 69, 72]], [43, [65, 67, 71]]]  # C6 Am7 Dm7 G7
+	tense = [[45, [60, 64, 69]], [40, [59, 64, 68]], [45, [60, 64, 69]], [40, [59, 62, 68]]]  # Am E7
+	brush_n = rng.standard_normal(int(SR * 0.12))
+	brush = (lowpass(brush_n, 6000) - lowpass(brush_n, 1500)) * env(0.12, 0.01, 0.04)
+	n_beats = int(length / beat) + 1
+	for k in range(n_beats):
+		at = k * beat
+		m = mode_at(at)
+		prog = tense if m == 'tension' else happy
+		root, ch = prog[(k // 4) % 4]
+		walk = [0, 4, 7, 9] if m != 'tension' else [0, 3, 7, 3]
+		add(lowpass(pluck(note(root - 12 + walk[k % 4]), 0.45, 3), 900), at, 0.55)
+		if m in ('curious', 'full', 'light') and k % 2 == 1:
+			for n in ch:
+				add(pluck(note(n), 0.3, 5), at + beat * 0.5 if m == 'full' else at, 0.07)
+		if m == 'tension':
+			add(np.sin(2 * np.pi * note(ch[2] + 12) * t(beat)) * env(beat, 0.05, 0.3), at, 0.03)
+		if m in ('curious', 'full', 'tension'):
+			add(brush, at, 0.25)
+			add(brush, at + beat * 0.66, 0.15)
+		if m == 'full' and k % 2 == 0:
+			kick = np.sin(2 * np.pi * np.cumsum(50 + 60 * np.exp(-t(0.25) / 0.03)) / SR) * env(0.25, 0.002, 0.1)
+			add(kick, at, 0.45)
+		if m in ('light', 'full') and k % 8 == 6:
+			mel = [76, 74, 72, 74, 76, 79][(k // 8) % 6]
+			x = t(beat * 1.5)
+			add(np.sin(2 * np.pi * note(mel) * x + 0.15 * np.sin(2 * np.pi * 5.5 * x)) * env(beat * 1.5, 0.03, 0.4), at, 0.05)
+	mix = mix[: int(SR * length)]
+	gate = np.ones(len(mix))
+	for a, b in cuts:
+		i, j = int(a * SR), int(b * SR)
+		gate[i:j] = 0
+		rn = int(0.2 * SR)
+		gate[j : j + rn] = np.linspace(0, 1, len(gate[j : j + rn]))
+	mix = mix * gate
+	st = int(sting * SR)
+	hit = boom(1.4) * 0.4 + logo()[: int(SR * 1.4)] * 0.3
+	mix[st : st + len(hit)] += hit[: len(mix) - st]
+	fade = np.ones_like(mix)
+	fade[: SR // 3] = np.linspace(0, 1, SR // 3)
+	fade[-SR * 2 :] = np.linspace(1, 0, SR * 2)
+	return mix * fade
+
+
+# ---------- Mutfak efektleri ----------
+def chop():
+	d = 0.35
+	x = t(d)
+	knock = np.sin(2 * np.pi * np.cumsum(180 + 200 * np.exp(-x / 0.01)) / SR) * env(d, 0.001, 0.05)
+	click = lowpass(rng.standard_normal(len(x)), 5000) * env(d, 0.0005, 0.006)
+	return knock + click * 1.2
+
+
+def crunch(d=0.5):
+	x = t(d)
+	n = rng.standard_normal(len(x)) * (rng.random(len(x)) < 0.25)
+	return (lowpass(n, 6000) - lowpass(n, 800)) * env(d, 0.002, 0.15) * 2
+
+
+def fizz(d=1.4):
+	x = t(d)
+	n = rng.standard_normal(len(x))
+	bubbles = n * (rng.random(len(x)) < 0.02) * 3
+	return (lowpass(n, 9000) - lowpass(n, 3000)) * 0.4 * np.sin(np.pi * x / d) + lowpass(bubbles, 4000) * np.sin(np.pi * x / d)
+
+
+def drip():
+	d = 0.3
+	x = t(d)
+	f = 1800 * np.exp(-x / 0.05) + 600
+	return np.sin(2 * np.pi * np.cumsum(f) / SR) * env(d, 0.001, 0.06)
+
+
+def fridge():
+	d = 1.4
+	x = t(d)
+	click = lowpass(rng.standard_normal(len(x)), 3000) * env(d, 0.001, 0.01)
+	hum_ = (np.sin(2 * np.pi * 60 * x) + 0.5 * np.sin(2 * np.pi * 120 * x)) * np.minimum(x / 0.3, 1) * np.minimum((d - x) / 0.3, 1) * 0.4
+	return click * 1.5 + hum_
+
+
+def ting():
+	return ding(3136, 1.0) * 0.8 + ding(4186, 1.0) * 0.4
+
+
+def boing(d=0.45):
+	x = t(d)
+	f = 220 + 500 * (x / d) + 60 * np.sin(2 * np.pi * 14 * x)
+	return np.sin(2 * np.pi * np.cumsum(f) / SR) * env(d, 0.005, 0.18)
+
+
 if __name__ == '__main__':
 	write('music/lofi-96.wav', music(45.0), 0.8)
 	# 03 POS: kanca → çip (2) → para yolculuğu (3) → gece/bloke (0) → gün sonu (1) → kapanış (2)
 	# 05 Uyku: düşüşte müzik susar, alarmda gerilim, ormanda gece sesleri, marka girişinde vuruş (zamanlar videodaki sn)
 	write('music/dream-70-uyku.wav', music_dream(45.0, mutes=[(2.4, 3.9)], tension=(17.9, 28.0), forest=(28.2, 34.5), sting=5.75), 0.8)
+	# 06 Soğan (videodaki sn): kanca hafif → hücre meraklı → bıçakta sus → gaz/göz gerilim → tarla hafif → ipuçları tam
+	write('music/kitchen-100-sogan.wav', music_kitchen(45.0, [(0, 'light'), (4.6, 'curious'), (13.0, 'tension'), (28.3, 'light'), (33.7, 'full')], cuts=[(10.6, 11.4)], sting=3.15), 0.8)
 	write('music/tech-120-pos.wav', music_tech(45.0, [(0, 1), (11.46, 2), (21.0, 3), (35.07, 0), (38.58, 1), (41.1, 2)]), 0.8)
 	for name, sig in {
 		'whoosh': whoosh(),
@@ -470,6 +589,13 @@ if __name__ == '__main__':
 		'alarm': alarm(),
 		'jolt': jolt(),
 		'clockring': clockring(),
+		'chop': chop(),
+		'crunch': crunch(),
+		'fizz': fizz(),
+		'drip': drip(),
+		'fridge': fridge(),
+		'ting': ting(),
+		'boing': boing(),
 	}.items():
 		write(f'sfx/{name}.wav', sig)
 	print('ok')

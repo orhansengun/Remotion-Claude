@@ -9,6 +9,8 @@ import {Pos, POS_FRAMES} from './videos/Pos/Pos';
 import {PosCover} from './videos/Pos/PosCover';
 import {Uyku, UYKU_FRAMES} from './videos/Uyku/Uyku';
 import {UykuCover} from './videos/Uyku/UykuCover';
+import {Sogan, SOGAN_FRAMES} from './videos/Sogan/Sogan';
+import {SoganCover} from './videos/Sogan/SoganCover';
 import {SolRakam, SOL_RAKAM_FRAMES} from './videos/SolRakam/SolRakam';
 import {FPS, HEIGHT, WIDTH} from './theme';
 
@@ -38,5 +40,7 @@ export const Root: React.FC = () => (
 	<Still id="PosCover" component={PosCover} width={WIDTH} height={HEIGHT} />
 	<Composition id="Uyku" component={Uyku} durationInFrames={UYKU_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} defaultProps={{vo: 'vo-uyku.wav'}} />
 	<Still id="UykuCover" component={UykuCover} width={WIDTH} height={HEIGHT} />
+	<Composition id="Sogan" component={Sogan} durationInFrames={SOGAN_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} defaultProps={{vo: 'vo-sogan.wav'}} />
+	<Still id="SoganCover" component={SoganCover} width={WIDTH} height={HEIGHT} />
 	</>
 );
